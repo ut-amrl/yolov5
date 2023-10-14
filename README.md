@@ -1,3 +1,22 @@
+# YOLOv5 ROS
+
+This is a repository of ROS support for YOLOv5. It depends on the [amrl_msgs](https://github.com/ut-amrl/amrl_msgs.git) to publish bounding box messages and the object detection service. To install the package:
+```Bash
+git clone https://github.com/ut-amrl/amrl_msgs.git
+cd amrl_msgs
+git checkout objectDetectionMsgs # Or the orbSlamSwitchTraj branch
+export ROS_PACKAGE_PATH=`pwd`:$ROS_PACKAGE_PATH
+make
+```
+
+To use YOLOv5 with ROS:
+```Bash
+python detect_ros.py --weights <path_to_weight_file> --img <inference_image_resolution> --conf <conf_level>
+```
+This scripts give you two option to obtain bounding boxes from YOLOv5 through ROS. First, it listens to the image topic specified [here](https://github.com/ut-amrl/yolov5/blob/ROS/detect_ros.py#L319). We provided two callback functions: `callback` takes in umcompressed images and `compressed_callback` accepts compressed images as the inputs. Second, `detect_ros` also starts a object detection service named `yolov5_detect_objs` so that you can query bounding box predict for an image. The resulting bounding boxes are published under `/yolov5/bboxes`, and you can see the visualizations by subscribing to `/yolov5/im0`. The script also supports output raw bounding boxes before NMS. To see the raw results, set variable `pub_raw` to true and the corresponding messages are published under `/yolov5/bboxes_raw` and `/yolov5/im_raw`. You can find the detailed message definitions for [BBox2DMsg](https://github.com/ut-amrl/amrl_msgs/blob/orbSlamSwitchTraj/msg/BBox2DMsg.msg), [BBox2DArrayMsg](https://github.com/ut-amrl/amrl_msgs/blob/orbSlamSwitchTraj/msg/BBox2DArrayMsg.msg) and [ObjectDetectionSrv](https://github.com/ut-amrl/amrl_msgs/blob/orbSlamSwitchTraj/srv/ObjectDetectionSrv.srv) in the provided links.
+
+# YOLOv5
+
 <div align="center">
 <p>
    <a align="left" href="https://ultralytics.com/yolov5" target="_blank">
